@@ -1,21 +1,23 @@
 from django import forms
-from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from .models import Task
 
-class UserRegisterForm(UserCreationForm):
-    email = forms.EmailField(required=True)
+class RegisterForm(UserCreationForm):
+    username = forms.CharField(label="Имя пользователя")
+    password1 = forms.CharField(label="Пароль", widget=forms.PasswordInput)
+    password2 = forms.CharField(label="Повторите пароль", widget=forms.PasswordInput)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2']
-
+        fields = ("username", "password1", "password2")
 
 class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
-        fields = ['title', 'description', 'due_date', 'is_done']
-        widgets = {
-            'due_date': forms.DateInput(attrs={'type': 'date'}),
-            'description': forms.Textarea(attrs={'rows': 3}),
+        fields = ["title", "description", "completed"]
+        labels = {
+            "title": "Название",
+            "description": "Описание",
+            "completed": "Выполнено",
         }

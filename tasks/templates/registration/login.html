@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-md mx-auto bg-gray-900 neon-border p-6 rounded-2xl shadow-lg">
+  <h2 class="text-2xl font-bold mb-4 text-neon">Вход</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="w-full bg-neon text-black font-bold py-2 px-4 rounded-xl hover:opacity-80 transition">
+      Войти
+    </button>
+  </form>
+  <p class="mt-4 text-sm text-gray-400">
+    Нет аккаунта? <a href="{% url 'register' %}" class="text-neon">Регистрация</a>
+  </p>
+</div>
+{% endblock %}

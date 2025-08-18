@@ -1,64 +1,27 @@
-{% extends 'tasks/base.html' %}
-
+{% extends 'base.html' %}
+{% block title %}Мои задачи{% endblock %}
 {% block content %}
-<form method="get" class="row g-2 mb-3">
-  <div class="col-md-4">
-    <input type="text" name="q" value="{{ q }}" class="form-control" placeholder="Поиск по названию/описанию">
-  </div>
-  <div class="col-md-3">
-    <select name="status" class="form-select">
-      <option value="" {% if not status %}selected{% endif %}>Все статусы</option>
-      <option value="pending" {% if status == 'pending' %}selected{% endif %}>В ожидании</option>
-      <option value="done" {% if status == 'done' %}selected{% endif %}>Выполнено</option>
-    </select>
-  </div>
-  <div class="col-md-3">
-    <select name="sort" class="form-select">
-      <option value="-due_date" {% if sort == '-due_date' %}selected{% endif %}>Дата (сначала ближайшие)</option>
-      <option value="due_date" {% if sort == 'due_date' %}selected{% endif %}>Дата (сначала дальние)</option>
-      <option value="title" {% if sort == 'title' %}selected{% endif %}>Название A→Z</option>
-      <option value="-title" {% if sort == '-title' %}selected{% endif %}>Название Z→A</option>
-      <option value="status" {% if sort == 'status' %}selected{% endif %}>Статус: pending→done</option>
-      <option value="-status" {% if sort == '-status' %}selected{% endif %}>Статус: done→pending</option>
-    </select>
-  </div>
-  <div class="col-md-2 d-grid">
-    <button class="btn btn-primary" type="submit">Применить</button>
-  </div>
-</form>
-
-<a class="btn btn-success mb-3" href="{% url 'task_create' %}">+ Добавить задачу</a>
-
-<table class="table table-striped table-hover shadow-lg">
-  <thead>
+<h2>Мои задачи</h2>
+<a class="btn" href="{% url 'task_create' %}">Добавить задачу</a>
+<table>
     <tr>
-      <th>Название</th>
-      <th>Описание</th>
-      <th>Срок</th>
-      <th>Статус</th>
-      <th>Действия</th>
+        <th>✔</th>
+        <th>Название</th>
+        <th>Описание</th>
+        <th>Дата</th>
+        <th>Действия</th>
     </tr>
-  </thead>
-  <tbody>
     {% for task in tasks %}
-    <tr>
-      <td>{{ task.title }}</td>
-      <td>{{ task.description|default:"—" }}</td>
-      <td>{{ task.due_date }}</td>
-      <td>
-        {% if task.is_done %}
-          <span class="badge bg-success">Done</span>
-        {% else %}
-          <span class="badge bg-warning text-dark">Pending</span>
-        {% endif %}
-      </td>
-      <td>
-        <a class="btn btn-sm btn-secondary" href="{% url 'task_edit' task.pk %}">Редактировать</a>
-      </td>
+    <tr class="{% if task.completed %}done{% endif %}">
+        <td><a href="{% url 'task_toggle' task.pk %}">{% if task.completed %}☑{% else %}☐{% endif %}</a></td>
+        <td>{{ task.title }}</td>
+        <td>{{ task.description }}</td>
+        <td>{{ task.created_at|date:"d.m.Y H:i" }}</td>
+        <td>
+            <a href="{% url 'task_edit' task.pk %}">✏️</a>
+            <a href="{% url 'task_delete' task.pk %}">🗑</a>
+        </td>
     </tr>
-    {% empty %}
-    <tr><td colspan="5">Пока нет задач.</td></tr>
     {% endfor %}
-  </tbody>
 </table>
 {% endblock %}
